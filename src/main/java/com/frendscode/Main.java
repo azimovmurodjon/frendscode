@@ -64,7 +64,7 @@ public class Main {
                     "iryna@gmail.com",
                     19
             );
-            List<Customer> customers = List.of(alex, jamila);
+            List<Customer> customers = List.of(alex, jamila, iryna);
             customerRepository.saveAll(customers);
         };
     }
