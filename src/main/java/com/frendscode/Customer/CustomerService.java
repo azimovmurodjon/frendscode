@@ -1,6 +1,7 @@
 package com.frendscode.Customer;
 
-import com.frendscode.exception.ResourceNotFound;
+import com.frendscode.exception.DuplicateResourceException;
+import com.frendscode.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Service
 public class CustomerService {
     public final CustomerDao customerDao;
+
 
 
     public CustomerService(@Qualifier("jpa") CustomerDao customerDao) {
@@ -21,8 +23,26 @@ public class CustomerService {
 
     public Customer getCustomer(Integer id) {
         return customerDao.selectCustomerById(id)
-                .orElseThrow(() -> new ResourceNotFound(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Customer with id [%s] not found".formatted(id)
                 ));
     }
+    public void addCustomer(
+            CustomerRegistrationRequest customerRegistrationequest) {
+        //check if email is exists
+        String email = customerRegistrationequest.email();
+        if (customerDao.existPersonWithEmail(email)) {
+            throw new DuplicateResourceException(
+                    "Email already existed"
+            );
+        }
+        Customer customer = new Customer(
+                customerRegistrationequest.name(),
+                customerRegistrationequest.email(),
+                customerRegistrationequest.age()
+        );
+        customerDao.insertCustomer(customer);
+    }
+    // add
+
 }
