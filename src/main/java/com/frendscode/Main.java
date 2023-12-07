@@ -53,18 +53,12 @@ public class Main {
                     21
             );
 
-            Customer jamila = new Customer(
-                    "Jamila",
-                    "jamila@gmail.com",
-                    20
-            );
-
             Customer iryna = new Customer(
                     "Iryna",
                     "iryna@gmail.com",
                     19
             );
-            List<Customer> customers = List.of(alex, jamila, iryna);
+            List<Customer> customers = List.of(alex, iryna);
             customerRepository.saveAll(customers);
         };
     }
