@@ -7,7 +7,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/customers")
 public class CustomerController {
-    public final CustomerService customerService;
+    CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
@@ -23,10 +23,17 @@ public class CustomerController {
             @PathVariable("customerId") Integer customerId) {
         return customerService.getCustomer(customerId);
     }
+
     @PostMapping
     public void registerCustomer(
             @RequestBody CustomerRegistrationRequest request
-    ){
+    ) {
         customerService.addCustomer(request);
+    }
+
+    @DeleteMapping("{customerId}")
+    public void deleteCustomer(
+            @PathVariable("customerId") Integer customerId) {
+        customerService.deleteCustomerById(customerId);
     }
 }

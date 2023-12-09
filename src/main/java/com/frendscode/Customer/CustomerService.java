@@ -12,7 +12,6 @@ public class CustomerService {
     public final CustomerDao customerDao;
 
 
-
     public CustomerService(@Qualifier("jpa") CustomerDao customerDao) {
         this.customerDao = customerDao;
     }
@@ -27,6 +26,7 @@ public class CustomerService {
                         "Customer with id [%s] not found".formatted(id)
                 ));
     }
+
     public void addCustomer(
             CustomerRegistrationRequest customerRegistrationequest) {
         //check if email is exists
@@ -36,6 +36,7 @@ public class CustomerService {
                     "Email already existed"
             );
         }
+        // Add
         Customer customer = new Customer(
                 customerRegistrationequest.name(),
                 customerRegistrationequest.email(),
@@ -43,6 +44,14 @@ public class CustomerService {
         );
         customerDao.insertCustomer(customer);
     }
-    // add
 
+    public void deleteCustomerById(Integer customerId) {
+        if (!customerDao.existPersonWithId(customerId)){
+            throw new ResourceNotFoundException(
+                    "Customer with id [%s] not found".formatted(customerId)
+            );
+        }
+        customerDao.deleteCustomerById(customerId);
+
+    }
 }
