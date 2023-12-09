@@ -1,6 +1,7 @@
 package com.frendscode.Customer;
 
 import com.frendscode.exception.DuplicateResourceException;
+import com.frendscode.exception.RequestValidationException;
 import com.frendscode.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -55,4 +56,40 @@ public class CustomerService {
 
         customerDao.deleteCustomerById(customerId);
     }
+
+    public void updateCustomer(Integer customerId,
+                               CustomerUpdateRequest updateRequest) {
+        Customer customer = getCustomer(customerId);
+        boolean changes = false;
+
+        if (updateRequest.name() != null &&
+                !updateRequest.name().equals(customer.getName())) {
+            customer.setName(updateRequest.name());
+            changes = true;
+        }
+
+        if (updateRequest.age() != null &&
+                !updateRequest.age().equals(customer.getAge())) {
+            customer.setAge(updateRequest.age());
+            changes = true;
+        }
+
+        if (updateRequest.email() != null &&
+                !updateRequest.email().equals(customer.getEmail())) {
+            if (customerDao.existPersonWithEmail(updateRequest.email())) {
+                throw new DuplicateResourceException(
+                        "This Email already taken"
+                );
+            }
+            customer.setEmail(updateRequest.email());
+            changes = true;
+        }
+        if (!changes){
+            throw new RequestValidationException(
+                    "No Data Changes Found"
+            );
+        }
+        customerDao.updateCustomer(customer);
+    }
+
 }
